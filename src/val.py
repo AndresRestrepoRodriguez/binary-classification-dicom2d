@@ -40,7 +40,7 @@ def val(opt):
 
     directory_exists = check_folder_existence(dataset_extracted)
     
-    if directory_exists:
+    if not directory_exists:
 
         destination_file = os.path.join(save_dir_data, 'tmp_dataset.' + data_model.extension)
 

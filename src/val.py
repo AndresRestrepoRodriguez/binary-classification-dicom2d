@@ -48,6 +48,7 @@ def val(opt):
     transformations_validation = define_val_transformation(image_size)
 
     validation_dataset = BinaryDICOMDataset(os.path.join(dataset_extracted, 'val'),
+                                            data_model.classes,
                                             transform=transformations_validation)
     
     validation_dataloader = define_dataloader(validation_dataset, batch_size, shuffle=False)

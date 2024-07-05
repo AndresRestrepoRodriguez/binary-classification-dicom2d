@@ -55,8 +55,10 @@ def train(opt):
     transformations_validation = define_val_transformation(image_size)
 
     training_dataset = BinaryDICOMDataset(os.path.join(dataset_extracted, 'train'),
+                                          data_model.classes,
                                           transform=transformations_training)
     validation_dataset = BinaryDICOMDataset(os.path.join(dataset_extracted, 'val'),
+                                            data_model.classes,
                                             transform=transformations_validation)
     
     training_dataloader = define_dataloader(training_dataset, batch_size)

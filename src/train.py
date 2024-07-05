@@ -69,7 +69,10 @@ def train(opt):
         model.load_state_dict(torch.load(weights))
     
     criterion = define_BCE_logits_loss()
-    optimizer = define_adam_optimizer(model.parameters(), lr=0.001)
+    params = {
+        'lr':0.001
+    }
+    optimizer = define_adam_optimizer(model.parameters(), **params)
 
     train_model(epochs,
                 model,

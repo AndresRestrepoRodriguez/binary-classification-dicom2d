@@ -4,6 +4,6 @@ numpy==1.25.2
 pydicom==2.4.4
 tqdm==4.66.4
 scikit-learn==1.2.2
-
+rarfile==4.2
 
 

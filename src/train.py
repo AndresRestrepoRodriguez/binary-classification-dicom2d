@@ -91,7 +91,7 @@ def parse_opt(known=False):
     parser.add_argument("--imgsz", "--img", "--img-size", type=int, default=224, help="train, val image size (pixels)")
     parser.add_argument("--patience", type=int, default=10, help="EarlyStopping patience (epochs without improvement)")
     parser.add_argument("--device", default="cuda", help="cuda device, i.e. 0 or 0,1,2,3 or cpu")
-    parser.add_argument("--save-dir-data", default=ROOT + "/data/raw", help="cuda device, i.e. 0 or 0,1,2,3 or cpu")
+    parser.add_argument("--save-dir-data", default=ROOT / "data/raw", help="cuda device, i.e. 0 or 0,1,2,3 or cpu")
 
     return parser.parse_known_args()[0] if known else parser.parse_args()
 

@@ -9,6 +9,7 @@ from utils.data import (
 )
 from utils.losses import define_BCE_logits_loss
 from utils.optimizers import define_adam_optimizer
+from utils.utils import check_folder_existence
 from data.DICOMDataset import BinaryDICOMDataset
 from models.DICOMBinaryClassification import BinaryClassificationCNN
 from models.train_model import train_model
@@ -40,16 +41,21 @@ def train(opt):
     data_cfg = read_yaml(data)
     data_model = BinaryDataModel(**data_cfg)
 
-    destination_file = os.path.join(save_dir_data, 'tmp_dataset.' + data_model.extension)
-
-    download_public_google_drive_file(data_model.id_file,
-                                      destination_file)
-    
-    decompress_file(destination_file,
-                    save_dir_data)
-    
     dataset_extracted = os.path.join(save_dir_data,
                                      data_model.folder)
+
+    directory_exists = check_folder_existence(dataset_extracted)
+    
+    if directory_exists:
+
+        destination_file = os.path.join(save_dir_data, 'tmp_dataset.' + data_model.extension)
+
+        download_public_google_drive_file(data_model.id_file,
+                                          destination_file)
+        
+        decompress_file(destination_file,
+                        save_dir_data)
+    
     
     transformations_training = define_train_transformation(image_size)
     transformations_validation = define_val_transformation(image_size)

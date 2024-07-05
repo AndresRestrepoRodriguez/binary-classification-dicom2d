@@ -6,6 +6,7 @@ from utils.data import (
     define_val_transformation,
     define_dataloader
 )
+from utils.utils import check_folder_existence
 from data.DICOMDataset import BinaryDICOMDataset
 from models.validation_model import validate_model
 from utils.schemas import BinaryDataModel
@@ -34,16 +35,21 @@ def val(opt):
     data_cfg = read_yaml(data)
     data_model = BinaryDataModel(**data_cfg)
 
-    destination_file = os.path.join(save_dir_data, 'tmp_dataset.' + data_model.extension)
-
-    download_public_google_drive_file(data_model.id_file,
-                                      destination_file)
-    
-    decompress_file(destination_file,
-                    save_dir_data)
-    
     dataset_extracted = os.path.join(save_dir_data,
                                      data_model.folder)
+
+    directory_exists = check_folder_existence(dataset_extracted)
+    
+    if directory_exists:
+
+        destination_file = os.path.join(save_dir_data, 'tmp_dataset.' + data_model.extension)
+
+        download_public_google_drive_file(data_model.id_file,
+                                          destination_file)
+        
+        decompress_file(destination_file,
+                        save_dir_data)
+    
     
     transformations_validation = define_val_transformation(image_size)
 

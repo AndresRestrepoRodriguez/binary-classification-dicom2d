@@ -9,7 +9,7 @@ from utils.data import (
 )
 from utils.losses import define_BCE_logits_loss
 from utils.optimizers import define_adam_optimizer
-from utils.utils import check_folder_existence
+from utils.utils import check_directory_contents
 from data.DICOMDataset import BinaryDICOMDataset
 from models.DICOMBinaryClassification import BinaryClassificationCNN
 from models.train_model import train_model
@@ -44,7 +44,7 @@ def train(opt):
     dataset_extracted = os.path.join(save_dir_data,
                                      data_model.folder)
 
-    directory_exists = check_folder_existence(dataset_extracted)
+    directory_exists = check_directory_contents(dataset_extracted)
     print(f"directory_exists: {directory_exists}")
     
     if not directory_exists:

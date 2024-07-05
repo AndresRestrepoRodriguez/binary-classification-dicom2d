@@ -6,7 +6,7 @@ from utils.data import (
     define_val_transformation,
     define_dataloader
 )
-from utils.utils import check_folder_existence
+from utils.utils import check_directory_contents
 from data.DICOMDataset import BinaryDICOMDataset
 from models.validation_model import validate_model
 from utils.schemas import BinaryDataModel
@@ -38,7 +38,7 @@ def val(opt):
     dataset_extracted = os.path.join(save_dir_data,
                                      data_model.folder)
 
-    directory_exists = check_folder_existence(dataset_extracted)
+    directory_exists = check_directory_contents(dataset_extracted)
     
     if not directory_exists:
 

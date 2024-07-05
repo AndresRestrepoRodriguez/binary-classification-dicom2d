@@ -40,7 +40,7 @@ def val(opt):
                                       destination_file)
     
     decompress_file(destination_file,
-                    os.path.join(save_dir_data, data_model.folder))
+                    save_dir_data)
     
     dataset_extracted = os.path.join(save_dir_data,
                                      data_model.folder)

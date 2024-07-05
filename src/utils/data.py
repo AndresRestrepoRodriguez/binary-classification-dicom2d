@@ -90,7 +90,7 @@ def define_val_transformation(img_size: int):
 
 
 def define_dataloader(dataset: Dataset, batch_size: int, shuffle: bool = True):
-    return DataLoader(Dataset, batch_size=batch_size, shuffle=shuffle)
+    return DataLoader(dataset, batch_size=batch_size, shuffle=shuffle)
 
 
 

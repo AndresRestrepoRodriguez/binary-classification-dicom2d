@@ -1,14 +1,14 @@
 import argparse
-from src.utils.data import (
+from utils.data import (
     read_yaml,
     download_public_google_drive_file,
     decompress_file,
     define_val_transformation,
     define_dataloader
 )
-from src.data.DICOMDataset import BinaryDICOMDataset
-from src.models.validation_model import validate_model
-from src.utils.schemas import BinaryDataModel
+from data.DICOMDataset import BinaryDICOMDataset
+from models.validation_model import validate_model
+from utils.schemas import BinaryDataModel
 from pathlib import Path
 import sys
 import os

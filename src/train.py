@@ -1,5 +1,5 @@
 import argparse
-from src.utils.data import (
+from utils.data import (
     read_yaml,
     download_public_google_drive_file,
     decompress_file,
@@ -7,12 +7,12 @@ from src.utils.data import (
     define_val_transformation,
     define_dataloader
 )
-from src.utils.losses import define_BCE_logits_loss
-from src.utils.optimizers import define_adam_optimizer
-from src.data.DICOMDataset import BinaryDICOMDataset
-from src.models.DICOMBinaryClassification import BinaryClassificationCNN
-from src.models.train_model import train_model
-from src.utils.schemas import BinaryDataModel
+from utils.losses import define_BCE_logits_loss
+from utils.optimizers import define_adam_optimizer
+from data.DICOMDataset import BinaryDICOMDataset
+from models.DICOMBinaryClassification import BinaryClassificationCNN
+from models.train_model import train_model
+from utils.schemas import BinaryDataModel
 from pathlib import Path
 import sys
 import os

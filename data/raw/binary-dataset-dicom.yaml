@@ -1,0 +1,6 @@
+source: google-drive
+id-file: 1CIgRJaofeWScv9JfPya7aNP2QGgbE_KT
+task: binary-classification
+classes: ['chest', 'brain']
+extension: rar
+folder: dataset-binary-dicom2d

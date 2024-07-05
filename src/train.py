@@ -45,6 +45,7 @@ def train(opt):
                                      data_model.folder)
 
     directory_exists = check_folder_existence(dataset_extracted)
+    print(f"directory_exists: {directory_exists}")
     
     if not directory_exists:
 

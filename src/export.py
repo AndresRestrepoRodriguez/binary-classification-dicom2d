@@ -28,7 +28,7 @@ def export(opt):
 
     weights_name = os.path.basename(weights)
     export_model_pytorch(model=model,
-                         torchscript_file_path=weights_name + '.torchscript')
+                         torchscript_file_path=os.path.splitext(weights_name)[0] + '.torchscript')
     
 
 

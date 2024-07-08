@@ -76,8 +76,8 @@ def parse_opt(known=False):
     parser.add_argument("--batch-size", type=int, default=16, help="total batch size for all GPUs, -1 for autobatch")
     parser.add_argument("--imgsz", "--img", "--img-size", type=int, default=224, help="train, val image size (pixels)")
     parser.add_argument("--device", default="cuda", help="cuda device, i.e. 0 or 0,1,2,3 or cpu")
-    parser.add_argument("--save-dir-data", default=ROOT / "data/raw", help="cuda device, i.e. 0 or 0,1,2,3 or cpu")
-    parser.add_argument("--model-type", default=ROOT / "data/raw", help="cuda device, i.e. 0 or 0,1,2,3 or cpu")
+    parser.add_argument("--save-dir-data", default=ROOT / "data/raw", help=" TODO ")
+    parser.add_argument("--model-type", default="pytorch", help=" TODO ")
 
 
     return parser.parse_known_args()[0] if known else parser.parse_args()

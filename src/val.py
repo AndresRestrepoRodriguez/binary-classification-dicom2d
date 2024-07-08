@@ -24,12 +24,13 @@ ROOT = Path(os.path.relpath(ROOT, Path.cwd()))
 
 def val(opt):
 
-    batch_size, weights, data, save_dir_data, image_size = (
+    batch_size, weights, data, save_dir_data, image_size, model_type = (
         opt.batch_size,
         opt.weights,
         opt.data,
         opt.save_dir_data,
-        opt.imgsz
+        opt.imgsz,
+        opt.model_type
     )
 
     data_cfg = read_yaml(data)
@@ -62,7 +63,8 @@ def val(opt):
    
     validate_model(
         validation_dataloader,
-        weights
+        weights,
+        model_type = model_type
         )
 
 
@@ -75,6 +77,7 @@ def parse_opt(known=False):
     parser.add_argument("--imgsz", "--img", "--img-size", type=int, default=224, help="train, val image size (pixels)")
     parser.add_argument("--device", default="cuda", help="cuda device, i.e. 0 or 0,1,2,3 or cpu")
     parser.add_argument("--save-dir-data", default=ROOT / "data/raw", help="cuda device, i.e. 0 or 0,1,2,3 or cpu")
+    parser.add_argument("--model-type", default=ROOT / "data/raw", help="cuda device, i.e. 0 or 0,1,2,3 or cpu")
 
 
     return parser.parse_known_args()[0] if known else parser.parse_args()

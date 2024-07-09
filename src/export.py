@@ -1,7 +1,7 @@
 import argparse
 from models.DICOMBinaryClassification import BinaryClassificationCNN
 import torch
-from models.export_model import export_model_pytorch
+from models.export_model import export_model_pytorch_trace
 import os
 
 
@@ -25,10 +25,12 @@ def export(opt):
     else:
         raise Exception(f'Weights path is required')
     
+    im = torch.zeros(1, 1, image_size, image_size)
 
     weights_name = os.path.basename(weights)
-    export_model_pytorch(model=model,
-                         torchscript_file_path=os.path.splitext(weights_name)[0] + '.torchscript')
+    export_model_pytorch_trace(model=model,
+                               im=im,
+                               torchscript_file_path=os.path.splitext(weights_name)[0] + '.torchscript')
     
 
 

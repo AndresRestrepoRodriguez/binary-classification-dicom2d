@@ -59,12 +59,11 @@ def export_model_onnx(model, im, onnx_file_path):
         torchscript_file_path (str): File path where the TorchScript model will be saved.
         onnx_file_path (str): File path where the ONNX model will be saved.
     """
-    dummy_input = torch.randn(im)
     # Ensure the model is in evaluation mode
     model.eval()
 
     # Export the model to ONNX
-    torch.onnx.export(model, dummy_input, onnx_file_path, export_params=True, opset_version=12,
+    torch.onnx.export(model, im, onnx_file_path, export_params=True, opset_version=12,
                       do_constant_folding=True, input_names=['input'], output_names=['output'],
                       dynamic_axes={'input': {0: 'batch_size'}, 'output': {0: 'batch_size'}})
     print(f"ONNX model saved to {onnx_file_path}")

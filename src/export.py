@@ -33,7 +33,7 @@ def export(opt):
     else:
         raise Exception(f'Weights path is required')
     
-    im = torch.zeros(1, 1, image_size, image_size)
+    im = torch.rand(1, 1, image_size, image_size)
 
     weights_name = os.path.basename(weights)
 

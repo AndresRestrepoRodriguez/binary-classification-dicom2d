@@ -1,18 +1,26 @@
 import argparse
 from models.DICOMBinaryClassification import BinaryClassificationCNN
 import torch
-from models.export_model import export_model_pytorch_trace
+from models.export_model import (
+    export_model_pytorch_trace,
+    export_model_onnx
+)
 import os
+
+FORMATS = ['torchscript', 'onnx']
 
 
 
 
 def export(opt):
 
-    weights, image_size = (
+    weights, image_size, format = (
         opt.weights,
-        opt.imgsz
+        opt.imgsz,
+        opt.format.strip()
     )
+
+    assert format in FORMATS, f"Invalid format : {format}. Valid formats: {FORMATS}"
 
     if weights:
         try:
@@ -28,9 +36,18 @@ def export(opt):
     im = torch.zeros(1, 1, image_size, image_size)
 
     weights_name = os.path.basename(weights)
-    export_model_pytorch_trace(model=model,
-                               im=im,
-                               torchscript_file_path=os.path.splitext(weights_name)[0] + '.torchscript')
+
+    if format is "torchscript":
+        export_model_pytorch_trace(model=model,
+                                   im=im,
+                                   torchscript_file_path=os.path.splitext(weights_name)[0] + f'.{format}')
+    elif format is "onnx":
+        export_model_onnx(model=model,
+                          im=im,
+                          onnx_file_path=os.path.splitext(weights_name)[0] + f'.{format}')
+    else:
+        raise Exception(f'Invalid format: {format} - Format not supported right now')
+
     
 
 
@@ -39,7 +56,7 @@ def parse_opt(known=False):
     parser = argparse.ArgumentParser()
     parser.add_argument("--weights", type=str, default=None, help="initial weights path")
     parser.add_argument("--imgsz", "--img", "--img-size", type=int, default=224, help="train, val image size (pixels)")
-
+    parser.add_argument("--format", "--fmt", "--format-model", type=str, default='torchscript', help="Format of exporting")
     return parser.parse_known_args()[0] if known else parser.parse_args()
 
 

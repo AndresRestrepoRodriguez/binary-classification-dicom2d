@@ -60,7 +60,7 @@ def validate_model(data_loader, model_path, model_type='pytorch'):
     f1 = f1_score(all_labels, all_predictions)
     cm = confusion_matrix(all_labels, all_predictions)
 
-    accuracy = np.mean(np.array(all_labels) == np.array(all_predictions))
+    accuracy = accuracy_score(all_labels,all_predictions)
     print(f"Validation Accuracy: {accuracy:.4f}")
     print(f"Precision: {precision:.4f}")
     print(f"Recall: {recall:.4f}")

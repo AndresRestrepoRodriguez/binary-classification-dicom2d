@@ -7,5 +7,6 @@ scikit-learn==1.2.2
 rarfile==4.2
 onnx==1.16.1
 onnxscript==0.1.0.dev20240711
+onnxruntime==1.18.1
 
 

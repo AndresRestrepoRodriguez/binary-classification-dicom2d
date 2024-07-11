@@ -37,11 +37,11 @@ def export(opt):
 
     weights_name = os.path.basename(weights)
 
-    if format is "torchscript":
+    if format == "torchscript":
         export_model_pytorch_trace(model=model,
                                    im=im,
                                    torchscript_file_path=os.path.splitext(weights_name)[0] + f'.{format}')
-    elif format is "onnx":
+    elif format == "onnx":
         export_model_onnx(model=model,
                           im=im,
                           onnx_file_path=os.path.splitext(weights_name)[0] + f'.{format}')

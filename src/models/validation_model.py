@@ -2,6 +2,7 @@ import torch
 from models.DICOMBinaryClassification import BinaryClassificationCNN
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
 import numpy as np
+import onnxruntime as ort
 
 
 def validate_model(data_loader, model_path, model_type='pytorch'):
@@ -12,34 +13,43 @@ def validate_model(data_loader, model_path, model_type='pytorch'):
             model = BinaryClassificationCNN()
             model.load_state_dict(torch.load(model_path))
             model.to(device)
+            model.eval()
 
         elif model_type == 'torchscript':
             model = torch.jit.load(model_path)
             model.to(device)
+            model.eval()
+
+        elif model_type == 'onnx':
+            ort_session = ort.InferenceSession(model_path)
+
+            def model(x):
+                # Preparing input to the ONNX model
+                inputs = {ort_session.get_inputs()[0].name: x.numpy()}
+                # Running inference
+                outputs = ort_session.run(None, inputs)
+                # Converting output from ONNX to tensor for consistency with PyTorch models
+                return torch.from_numpy(outputs[0])
+        else:
+            raise ValueError("Invalid model type specified.")
     except Exception as e:
         raise Exception(f'Problem loading the Model: {e}')
 
-    """elif model_type == 'onnx':
-        session = onnxruntime.InferenceSession(model_path)
-        def model(x):
-            inputs = {session.get_inputs()[0].name: x.numpy()}
-            outputs = session.run(None, inputs)
-            return torch.from_numpy(outputs[0])"""
-
-    model.eval()
+    
     all_labels = []
     all_predictions = []
 
     with torch.no_grad():
         for images, labels in data_loader:
-            images = images.to(device)
-            labels = labels.to(device, dtype=torch.float32)
 
+            # Adjust device handling for ONNX as it needs CPU numpy arrays
             if model_type == 'onnx':
-                outputs = model(images.cpu())
+                images = images.to('cpu')
+                outputs = model(images)
             else:
+                images = images.to(device)
                 outputs = model(images).squeeze()
-
+            
             predicted = torch.sigmoid(outputs).round()
             all_labels.extend(labels.cpu().numpy())
             all_predictions.extend(predicted.cpu().numpy())

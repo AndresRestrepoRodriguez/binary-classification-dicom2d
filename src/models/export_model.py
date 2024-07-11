@@ -41,7 +41,7 @@ def export_model_pytorch_trace(model, im, torchscript_file_path):
     # Export to TorchScript
     #scripted_model = torch.jit.script(model)
     ts = torch.jit.trace(model, im, strict=False)
-    d = {"shape": im.shape, "stride": int(max(model.stride)), "names": model.names}
+    d = {"shape": im.shape}
     extra_files = {"config.txt": json.dumps(d)}  # torch._C.ExtraFilesMap()
     #scripted_model.save(torchscript_file_path)
     ts.save(str(torchscript_file_path), _extra_files=extra_files)

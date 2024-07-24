@@ -64,6 +64,7 @@ def val(opt):
     validate_model(
         validation_dataloader,
         weights,
+        classes = data_model.classes,
         model_type = model_type
         )
 

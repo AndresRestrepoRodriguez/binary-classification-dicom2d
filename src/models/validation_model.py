@@ -1,11 +1,19 @@
 import torch
 from models.DICOMBinaryClassification import BinaryClassificationCNN
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
+from sklearn.metrics import (
+    accuracy_score,
+    precision_score,
+    recall_score,
+    f1_score,
+    confusion_matrix,
+    ConfusionMatrixDisplay
+)
 import numpy as np
 import onnxruntime as ort
+import matplotlib.pyplot as plt
 
 
-def validate_model(data_loader, model_path, model_type='pytorch'):
+def validate_model(data_loader, model_path, classes, model_type='pytorch'):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     try:
@@ -67,3 +75,6 @@ def validate_model(data_loader, model_path, model_type='pytorch'):
     print(f"F1 Score: {f1:.4f}")
     print("Confusion Matrix:")
     print(cm)
+    disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=classes)
+    disp.plot()
+    plt.show()

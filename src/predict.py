@@ -16,6 +16,8 @@ def predict(opt):
     prediction = predict_model(image=image_path,
                                model=model,
                                img_size=image_size)
+    
+    print(f"prediction: {prediction}")
 
 
 def main(parameters):

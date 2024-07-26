@@ -1,4 +1,4 @@
-from src.models.DICOMBinaryClassification import BinaryClassificationCNN
+from models.DICOMBinaryClassification import BinaryClassificationCNN
 import torch
 
 

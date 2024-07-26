@@ -27,7 +27,7 @@ def predict_model(image: str, model, image_base64=False, img_size=224, device='c
     dicom_image_transformed = dicom_image_transformed.to(device)
 
     model.eval()
-    output = model(dicom_image_transformed).squeeze()
+    output = model(dicom_image_transformed.unsqueeze(0)).squeeze()
     predicted = torch.sigmoid(output).round()
     return predicted
 

@@ -8,6 +8,9 @@ import yaml
 import requests
 from torch.utils.data import Dataset, DataLoader
 
+import pydicom
+import numpy as np
+
 
 def download_public_google_drive_file(file_id, destination):
     """
@@ -118,3 +121,9 @@ def read_yaml(filepath: str):
         print(f"An error occurred: {e}")
         return None
     return data
+
+
+def read_dicom_image(image_file):
+    ds = pydicom.dcmread(image_file)
+    image = ds.pixel_array.astype(np.float32) / 255.0
+    return image

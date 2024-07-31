@@ -10,6 +10,8 @@ from torch.utils.data import Dataset, DataLoader
 
 import pydicom
 import numpy as np
+from bs4 import BeautifulSoup
+
 
 
 def download_public_google_drive_file(file_id, destination):
@@ -33,6 +35,35 @@ def download_public_google_drive_file(file_id, destination):
             for chunk in response.iter_content(chunk_size=8192):
                 file.write(chunk)
     print(f"File has been downloaded successfully and saved to {destination}")
+
+
+def download_file_from_google_drive(file_id, destination):
+    URL = "https://drive.google.com/uc?export=download"
+    session = requests.Session()
+
+    response = session.get(URL, params={'id': file_id}, stream=True)
+    token = get_confirm_token(response)
+    print(f"token: {token}")
+    if token:
+        params = {'id': file_id, 'confirm': token}
+        response = session.get(URL, params=params, stream=True)
+    save_response_content(response, destination)
+
+def get_confirm_token(response):
+    # We use BeautifulSoup to parse the HTML content
+    soup = BeautifulSoup(response.content, "html.parser")
+    # Find the input tag that has the name attribute 'confirm' and extract its value
+    tag = soup.find('input', {'name': 'confirm'})
+    if tag:
+        return tag['value']
+    return None
+
+def save_response_content(response, destination):
+    CHUNK_SIZE = 32768
+    with open(destination, "wb") as f:
+        for chunk in response.iter_content(CHUNK_SIZE):
+            if chunk:  # filter out keep-alive new chunks
+                f.write(chunk)
 
 
 def decompress_file(filepath, extract_to):

@@ -155,6 +155,6 @@ def read_yaml(filepath: str):
 
 
 def read_dicom_image(image_file):
-    ds = pydicom.dcmread(image_file)
+    ds = pydicom.dcmread(image_file, force=True)
     image = ds.pixel_array.astype(np.float32) / 255.0
     return image

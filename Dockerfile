@@ -1,7 +1,6 @@
 FROM python:3.9-slim
 
-docker images
-
+WORKDIR /app
 
 COPY requirements.txt .
 

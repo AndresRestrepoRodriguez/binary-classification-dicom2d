@@ -12,7 +12,6 @@ from src.utils.data import (
 def predict_model(image: str, model, image_base64=False, img_size=224, device='cpu'):
 
     if image_base64:
-        print('True base64')
         dicom_data = base64.b64decode(image)
         dicom_file = io.BytesIO(dicom_data)
     else:
@@ -26,5 +25,15 @@ def predict_model(image: str, model, image_base64=False, img_size=224, device='c
     with torch.no_grad():
         output = model(dicom_image_transformed.unsqueeze(0)).squeeze()
         #predicted = torch.sigmoid(output).round()
+    return output.item()
+
+
+def predict_model_citadel(image_data, model, img_size=224, device='cpu'):
+    img_array = np.asarray(image_data).astype(np.float32) / 255.0
+    transformation = define_val_transformation(img_size)
+    dicom_image_transformed = transformation(img_array)
+    dicom_image_transformed = dicom_image_transformed.to(device)
+    with torch.no_grad():
+        output = model(dicom_image_transformed.unsqueeze(0)).squeeze()
     return output.item()
 

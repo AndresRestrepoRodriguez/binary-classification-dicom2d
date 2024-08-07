@@ -35,7 +35,7 @@ def predict():
     img_data = Image.open(io.BytesIO(base64.b64decode(data['image'])))
     
 
-    prediction = predict_model_citadel(image=img_data,
+    prediction = predict_model_citadel(image_data=img_data,
                                        model=model)
     
     return jsonify({'predictions': prediction})

@@ -1,8 +1,8 @@
 import base64
 import io
 from flask import Flask, jsonify, request
-from src.utils.model import read_pytorch_model_eval
-from src.models.predict_model import predict_model_citadel
+from src.utils.model import read_pytorch_model_eval, read_torchcript_model_eval
+from src.models.predict_model import predict_model_citadel, predict_model
 from src.utils.data import (
     read_yaml
 )
@@ -14,7 +14,7 @@ import numpy as np
 
 app = Flask(__name__)
 MODELS_DIRECTORY = 'models'
-MODEL_CONFIG_PATH = 'models/model.yaml'
+MODEL_CONFIG_PATH = 'models/model_torch.yaml'
 
 #Download model
 model_cfg = read_yaml(MODEL_CONFIG_PATH)
@@ -24,8 +24,8 @@ print(model_structure)
 
 destination_file = os.path.join(MODELS_DIRECTORY, 'tmp_model.' + model_structure.extension)
 
-model_path = 'models/best_model.pth'
-model = read_pytorch_model_eval(weights=model_path)
+model_path = 'models/best_model_brain_chest.torchscript'
+model = read_torchcript_model_eval(weights=model_path)
 
 
 @app.route('/predict', methods=['POST'])

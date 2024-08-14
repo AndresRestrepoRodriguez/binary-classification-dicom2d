@@ -15,12 +15,6 @@ tmp_image_path = 'data/tmp_png_dicom.png'
 
 results = []
 
-
-def read_dicom_image(image_file):
-    ds = pydicom.dcmread(image_file, force=True)
-    image = ds.pixel_array
-    return image
-
 def dicom_to_png(dicom_file_path, png_file_path):
     # Read the DICOM file
     dicom_image = pydicom.dcmread(dicom_file_path, force=True)
@@ -51,9 +45,9 @@ for image in images_brain:
     data = {'image': encoded_image}
     response = requests.post('http://127.0.0.1:5000/predict', json=data)
     prob = response.json().get('predictions')
-    class_prob = torch.sigmoid(torch.tensor(prob)).round().item()
+    class_prob = torch.sigmoid(torch.tensor(1-prob)).round().item()
     
-    results.append([image, class_prob, ground_true_class, label])
+    results.append([image, prob, class_prob, ground_true_class, label])
 
 
 for image in images_chest:
@@ -68,10 +62,10 @@ for image in images_chest:
     response = requests.post('http://127.0.0.1:5000/predict', json=data)
     prob = response.json().get('predictions')
     class_prob = torch.sigmoid(torch.tensor(prob)).round().item()
-    results.append([image, class_prob, ground_true_class, label])
+    results.append([image, prob, class_prob, ground_true_class, label])
 
 
-df = pd.DataFrame(results, columns=['path', 'pred_class', 'true_class', 'label'])
-df.to_csv('results_torchcript_no_norm.csv', index=False) 
+df = pd.DataFrame(results, columns=['path', 'prob', 'pred_class', 'true_class', 'label'])
+df.to_csv('docker_results_hoang_prob_0.csv', index=False) 
 
     

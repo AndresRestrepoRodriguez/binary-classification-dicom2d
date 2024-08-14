@@ -10,7 +10,8 @@ from sklearn.metrics import (
     roc_auc_score,
     precision_recall_curve,
     auc,
-    fbeta_score
+    fbeta_score,
+    average_precision_score
 )
 
 
@@ -18,10 +19,36 @@ def get_predictions(dataframe):
 
     all_labels = dataframe['true_class'].values
     all_predictions = dataframe['pred_class'].values
-    return all_labels, all_predictions
+    all_probs = dataframe['prob'].values
+    return all_labels, all_predictions, all_probs
 
 
-def get_metrics(all_labels, all_predictions, classes):
+# Taken from scikitplot
+def aucrc(y_true: np.ndarray, y_score: np.ndarray) -> float:
+    """Area Under Cumulative Gains Curve.
+
+    Args:
+        y_true (np.ndarray): ground truth
+        y_score (np.ndarray): predicted probabilities/scores
+
+    Returns:
+        float: area under the RC curve
+    """
+    y_true, y_score = np.asarray(y_true), np.asarray(y_score)
+    # make y_true a boolean vector
+    y_true = y_true == 1
+    sorted_indices = np.argsort(y_score)[::-1]
+    y_true = y_true[sorted_indices]
+    gains = np.cumsum(y_true)
+    value_range = np.arange(start=1, stop=len(y_true) + 1)
+    gains = gains / float(np.sum(y_true))
+    percentages = value_range / float(len(y_true))
+    gains = np.insert(gains, 0, [0])
+    percentages = np.insert(percentages, 0, [0])
+    return auc(percentages, gains)
+
+
+def get_metrics(all_labels, all_predictions, all_probs, classes):
     # Calculate metrics
     precision = precision_score(all_labels, all_predictions)
     recall = recall_score(all_labels, all_predictions)
@@ -30,11 +57,13 @@ def get_metrics(all_labels, all_predictions, classes):
     tn, fp, fn, tp = cm.ravel()
 
     # AUROC
-    auroc = roc_auc_score(all_labels, all_predictions)
+    auroc = roc_auc_score(all_labels, all_probs, labels=classes)
+    aucrc_score = aucrc(all_labels, all_probs)
 
     # AUPRC
-    precision_vals, recall_vals, _ = precision_recall_curve(all_labels, all_predictions)
-    auprc = auc(recall_vals, precision_vals)
+    #precision_vals, recall_vals, _ = precision_recall_curve(all_labels, all_probs)
+    #auprc = auc(recall_vals, precision_vals)
+    auprc = average_precision_score(all_labels, all_probs)
 
     # F-beta scores
     f_beta_0_5 = fbeta_score(all_labels, all_predictions, beta=0.5)
@@ -77,6 +106,7 @@ def get_metrics(all_labels, all_predictions, classes):
     print(f"Recall: {recall:.4f}")
     print(f"F1 Score: {f1:.4f}")
     print(f"auroc score: {auroc:.4f}")
+    print(f"aucrc score: {aucrc_score:.4f}")
     
 
     print(f"auprc: {auprc:.4f}")
@@ -95,8 +125,8 @@ def get_metrics(all_labels, all_predictions, classes):
 
 if __name__ == "__main__":
     classes = ['brain', 'chest']
-    csv_path = 'results_torchcript_no_norm.csv'
+    csv_path = 'docker_results_probabilities.csv'
     predictions_df = pd.read_csv(csv_path)
-    true_labels, pred_labels = get_predictions(predictions_df)
-    get_metrics(true_labels, pred_labels, classes)
+    true_labels, pred_labels, probs = get_predictions(predictions_df)
+    get_metrics(true_labels, pred_labels, probs, classes)
 

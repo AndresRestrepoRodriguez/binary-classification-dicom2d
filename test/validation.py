@@ -125,7 +125,7 @@ def get_metrics(all_labels, all_predictions, all_probs, classes):
 
 if __name__ == "__main__":
     classes = ['brain', 'chest']
-    csv_path = 'docker_results_probabilities.csv'
+    csv_path = 'docker_results_hoang_prob.csv'
     predictions_df = pd.read_csv(csv_path)
     true_labels, pred_labels, probs = get_predictions(predictions_df)
     get_metrics(true_labels, pred_labels, probs, classes)

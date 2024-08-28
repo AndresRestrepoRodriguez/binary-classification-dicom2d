@@ -17,6 +17,7 @@ from sklearn.metrics import (
 import numpy as np
 import onnxruntime as ort
 import matplotlib.pyplot as plt
+from utils import metrics as metrics
 
 
 def validate_model(data_loader, model_path, classes, model_type='pytorch'):
@@ -52,6 +53,7 @@ def validate_model(data_loader, model_path, classes, model_type='pytorch'):
     
     all_labels = []
     all_predictions = []
+    all_scores = []
 
     with torch.no_grad():
         for images, labels in data_loader:
@@ -64,80 +66,44 @@ def validate_model(data_loader, model_path, classes, model_type='pytorch'):
                 images = images.to(device)
                 outputs = model(images).squeeze()
             
+            all_scores.extend(outputs.cpu().numpy())
             predicted = torch.sigmoid(outputs).round()
             all_labels.extend(labels.cpu().numpy())
             all_predictions.extend(predicted.cpu().numpy())
 
-    # Calculate metrics
-    precision = precision_score(all_labels, all_predictions)
-    recall = recall_score(all_labels, all_predictions)
-    f1 = f1_score(all_labels, all_predictions)
-    cm = confusion_matrix(all_labels, all_predictions)
-    tn, fp, fn, tp = cm.ravel()
+    y_true = np.array(all_labels)
+    y_pred = np.array(all_predictions)
+    y_score = np.array(all_scores)
 
-    # AUROC
-    auroc = roc_auc_score(all_labels, all_predictions)
+    binary_accuracy = metrics.binary_accuracy(y_true, y_pred)
+    aucrc = metrics.aucrc(y_true, y_score)
+    auprc = metrics.auprc(y_true, y_score)
+    auroc = metrics.auroc(y_true, y_score)
+    confusionmatrix = metrics.confusionmatrix(y_true, y_pred)
+    binary_precision = metrics.binary_precision(y_true, y_pred)
+    binary_recall = metrics.binary_recall(y_true, y_pred)
+    binary_f1_score = metrics.binary_f1_score(y_true, y_pred)
+    binary_f05_score = metrics.binary_f05_score(y_true, y_pred)
+    binary_f2_score = metrics.binary_f2_score(y_true, y_pred)
+    false_omission_rate = metrics.false_omission_rate(y_true, y_pred)
+    positive_likelihood_ratio = metrics.positive_likelihood_ratio(y_true, y_pred)
+    negative_likelihood_ratio = metrics.negative_likelihood_ratio(y_true, y_pred)
+    prevalence = metrics.prevalence(y_true, y_pred)
 
-    # AUPRC
-    precision_vals, recall_vals, _ = precision_recall_curve(all_labels, all_predictions)
-    auprc = auc(recall_vals, precision_vals)
-
-    # F-beta scores
-    f_beta_0_5 = fbeta_score(all_labels, all_predictions, beta=0.5)
-    f_beta_2 = fbeta_score(all_labels, all_predictions, beta=2)
-
-    # False Discovery Rate (FDR)
-    fdr = fp / (fp + tp)
-
-    # False Negative Rate (FNR)
-    fnr = fn / (fn + tp)
-
-    # False Omission Rate (FOR)
-    for_ = fn / (fn + tn)
-
-    # False Positive Rate (FPR)
-    fpr = fp / (fp + tn)
-
-    # Negative Predictive Value (NPV)
-    npv = tn / (tn + fn)
-
-    # Negative Likelihood Ratio (NLR)
-    nlr = fnr / (tn / (tn + fp))
-
-    # Positive Likelihood Ratio (PLR)
-    plr = recall / fpr
-
-    # Prevalence
-    prevalence = (tp + fn) / (tp + tn + fp + fn)
-
-    # True Negative Rate (TNR)
-    tnr = tn / (tn + fp)
-
-
-    accuracy = accuracy_score(all_labels,all_predictions)
-    disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=classes)
-    disp.plot().figure_.savefig('confusion_matrix.png')
-    print(f"Confusion Matrix: {cm}")
-    print(f"Validation Accuracy: {accuracy:.4f}")
-    print(f"Precision: {precision:.4f}")
-    print(f"Recall: {recall:.4f}")
-    print(f"F1 Score: {f1:.4f}")
-    print(f"auroc score: {auroc:.4f}")
-    
-
-    print(f"auprc: {auprc:.4f}")
-    print(f"F-beta scores _0_5: {f_beta_0_5:.4f}")
-    print(f"F-beta scores _2: {f_beta_2:.4f}")
-    print(f"False Discovery Rate (FDR): {fdr:.4f}")
-    print(f"False Negative Rate (FNR): {fnr:.4f}")
-    print(f"False Omission Rate (FOR): {for_:.4f}")
-    print(f"False Positive Rate (FPR): {fpr:.4f}")
-    print(f"Negative Predictive Value (NPV): {npv:.4f}")
-    print(f"Negative Likelihood Ratio (NLR): {nlr:.4f}")
-    print(f"Positive Likelihood Ratio (PLR): {plr:.4f}")
-    print(f"prevalence: {prevalence:.4f}")
-    print(f"True Negative Rate (TNR): {tnr:.4f}")
-
+    print(f"Binary Accuracy: {binary_accuracy:.4f}")
+    print(f"AUCRC: {aucrc:.4f}")
+    print(f"AUPRC: {auprc:.4f}")
+    print(f"AUROC: {auroc:.4f}")
+    print(f"Confusion Matrix: {confusionmatrix}")
+    print(f"Binary Precision: {binary_precision:.4f}")
+    print(f"Binary Recall: {binary_recall:.4f}")
+    print(f"Binary F1 Score: {binary_f1_score:.4f}")
+    print(f"Binary F0.5 Score: {binary_f05_score:.4f}")
+    print(f"Binary F2 Score: {binary_f2_score:.4f}")
+    print(f"False Omission Rate: {false_omission_rate:.4f}")
+    print(f"Positive Likelihood Ratio: {positive_likelihood_ratio:.4f}")
+    print(f"Negative Likelihood Ratio: {negative_likelihood_ratio:.4f}")
+    print(f"Prevalence: {prevalence:.4f}")
     
 
     

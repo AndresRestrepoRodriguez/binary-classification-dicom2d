@@ -35,5 +35,24 @@ def predict_model_citadel(image_data, model, img_size=224, device='cpu'):
     dicom_image_transformed = dicom_image_transformed.to(device)
     with torch.no_grad():
         output = model(dicom_image_transformed.unsqueeze(0)).squeeze()
-    return output.item()
+    print(output)
+    value = np.float32(output.numpy())
+    print(value)
+    print(type(value))
+    res = output.item()
+    print(f"res type: {type(res)}")
+    return res
 
+
+def predict_model_citadel_v2(image_data, model, img_size=224, device='cpu'):
+    img_array = np.asarray(image_data).astype(np.float32) / 255.0
+    transformation = define_val_transformation(img_size)
+    dicom_image_transformed = transformation(img_array)
+    dicom_image_transformed = dicom_image_transformed.to(device)
+    with torch.no_grad():
+        output = model(dicom_image_transformed.unsqueeze(0)).squeeze()
+    probs = torch.sigmoid(output)
+    probs_item = probs.item()
+    print(probs)
+    print(probs_item)
+    return probs_item

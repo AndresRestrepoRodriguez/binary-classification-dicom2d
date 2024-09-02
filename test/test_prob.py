@@ -52,8 +52,8 @@ for image in images_brain:
     prob = np.float32(prob)
     print(prob)
     print(type(prob))
-    class_prob = torch.sigmoid(torch.tensor(1-prob)).item()
-    y_pred.append(class_prob)
+    #class_prob = torch.sigmoid(torch.tensor(1-prob)).item()
+    y_pred.append(prob)
     y_true.append(ground_true_class)
     y_score.append(prob)
 
@@ -70,10 +70,10 @@ for image in images_chest:
     response = requests.post('http://127.0.0.1:5000/predict', json=data)
     prob = response.json().get('predictions')
     prob = np.float32(prob)
-    class_prob = torch.sigmoid(torch.tensor(prob)).item()
+    #class_prob = torch.sigmoid(torch.tensor(prob)).item()
     print(prob)
     print(type(prob))
-    y_pred.append(class_prob)
+    y_pred.append(prob)
     y_true.append(ground_true_class)
     y_score.append(prob)
 

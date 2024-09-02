@@ -2,7 +2,7 @@ import base64
 import io
 from flask import Flask, jsonify, request
 from src.utils.model import read_pytorch_model_eval, read_torchcript_model_eval
-from src.models.predict_model import predict_model_citadel, predict_model
+from src.models.predict_model import predict_model_citadel, predict_model, predict_model_citadel_v2
 from src.utils.data import (
     read_yaml
 )
@@ -35,7 +35,7 @@ def predict():
     img_data = Image.open(io.BytesIO(base64.b64decode(data['image'])))
     
 
-    prediction = predict_model_citadel(image_data=img_data,
+    prediction = predict_model_citadel_v2(image_data=img_data,
                                        model=model)
     
     return jsonify({'predictions': prediction})

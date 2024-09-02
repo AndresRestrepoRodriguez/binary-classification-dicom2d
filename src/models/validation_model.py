@@ -61,7 +61,7 @@ def validate_model(data_loader, model_path, classes, model_type='pytorch'):
             # Adjust device handling for ONNX as it needs CPU numpy arrays
             if model_type == 'onnx':
                 images = images.to('cpu')
-                outputs = model(images)
+                outputs = model(images).squeeze()
             else:
                 images = images.to(device)
                 outputs = model(images).squeeze()

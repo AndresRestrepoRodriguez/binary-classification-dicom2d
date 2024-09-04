@@ -24,7 +24,7 @@ print(model_structure)
 
 destination_file = os.path.join(MODELS_DIRECTORY, 'tmp_model.' + model_structure.extension)
 
-model_path = 'models/best_model_brain_chest.torchscript'
+model_path = 'models/binary_best_model_v2.torchscript'
 model = read_torchcript_model_eval(weights=model_path)
 
 

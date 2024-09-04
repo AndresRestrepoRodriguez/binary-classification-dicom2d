@@ -2,7 +2,7 @@ from torch.utils.data import Dataset
 import os
 import pydicom
 import numpy as np
-from src.utils.data import normalize_image
+from utils.data import normalize_image, normalize_ct_int16
 
 
 
@@ -28,7 +28,7 @@ class BinaryDICOMDataset(Dataset):
         
         ds = pydicom.dcmread(self.filenames[idx])
         image = ds.pixel_array
-        image = normalize_image(image)
+        image = normalize_ct_int16(image)
         label = self.labels[idx]
 
         if self.transform:

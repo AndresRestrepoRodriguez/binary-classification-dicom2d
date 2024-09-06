@@ -45,12 +45,14 @@ def predict_model_citadel(image_data, model, img_size=224, device='cpu'):
     return res
 
 
-def predict_model_citadel_v2(image_data, model, img_size=224, device='cpu'):
-    #img_array = np.asarray(image_data).astype(np.float32) / 255.0
-    img_array = normalize_image(np.asarray(image_data))
+def predict_model_docker(image_data, model, img_size=224, device='cpu'):
+    np_array = np.asarray(image_data) / 255.0
+    np_array = np_array.astype(np.float32)
+    print(np_array)
     transformation = define_val_transformation(img_size)
-    dicom_image_transformed = transformation(img_array)
+    dicom_image_transformed = transformation(np_array)
     dicom_image_transformed = dicom_image_transformed.to(device)
     with torch.no_grad():
         output = model(dicom_image_transformed.unsqueeze(0)).squeeze()
-    return output.item()
+    outputs = output.cpu().numpy()
+    return outputs.tolist()

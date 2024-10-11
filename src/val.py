@@ -13,6 +13,7 @@ from utils.schemas import BinaryDataModel
 from pathlib import Path
 import sys
 import os
+from typing import Union
 
 
 FILE = Path(__file__).resolve()

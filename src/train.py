@@ -27,6 +27,7 @@ if str(ROOT) not in sys.path:
     sys.path.append(str(ROOT))
 ROOT = Path(os.path.relpath(ROOT, Path.cwd()))
 
+
 def train(opt: argparse.Namespace) -> None:
     """
     Trains a binary classification model using the provided configuration options.

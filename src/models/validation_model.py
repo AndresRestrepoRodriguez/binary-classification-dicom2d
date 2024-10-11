@@ -1,26 +1,36 @@
 import torch
 from models.DICOMBinaryClassification import BinaryClassificationCNN
-from sklearn.metrics import (
-    accuracy_score,
-    precision_score,
-    recall_score,
-    f1_score,
-    confusion_matrix,
-    ConfusionMatrixDisplay,
-    roc_auc_score,
-    precision_recall_curve,
-    auc,
-    fbeta_score,
-
-
-)
 import numpy as np
 import onnxruntime as ort
 import matplotlib.pyplot as plt
 from utils import metrics as metrics
+from typing import List
 
 
-def validate_model(data_loader, model_path, classes, model_type='pytorch'):
+
+def validate_model(
+    data_loader: torch.utils.data.DataLoader, 
+    model_path: str, 
+    classes: List[str], 
+    model_type: str = 'pytorch'
+) -> None:
+    """
+    Validates a multiclass classification model on the given dataset.
+
+    Args:
+        data_loader (torch.utils.data.DataLoader): DataLoader for the validation dataset.
+        model_path (str): Path to the saved model file (either PyTorch, TorchScript, or ONNX).
+        classes (List[str]): List of class names corresponding to the model's output.
+        num_classes (int): Number of output classes for the classification task.
+        model_type (str, optional): Type of the model to load ('pytorch', 'torchscript', 'onnx'). Defaults to 'pytorch'.
+
+    Raises:
+        ValueError: If an invalid model type is specified.
+        Exception: If there is an issue loading the model.
+
+    Returns:
+        None
+    """
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     try:
@@ -73,37 +83,10 @@ def validate_model(data_loader, model_path, classes, model_type='pytorch'):
 
     y_true = np.array(all_labels)
     y_pred = np.array(all_predictions)
-    y_score = np.array(all_scores)
 
-    binary_accuracy = metrics.binary_accuracy(y_true, y_pred)
-    aucrc = metrics.aucrc(y_true, y_score)
-    auprc = metrics.auprc(y_true, y_score)
-    auroc = metrics.auroc(y_true, y_score)
-    confusionmatrix = metrics.confusionmatrix(y_true, y_pred)
-    binary_precision = metrics.binary_precision(y_true, y_pred)
-    binary_recall = metrics.binary_recall(y_true, y_pred)
-    binary_f1_score = metrics.binary_f1_score(y_true, y_pred)
-    binary_f05_score = metrics.binary_f05_score(y_true, y_pred)
-    binary_f2_score = metrics.binary_f2_score(y_true, y_pred)
-    false_omission_rate = metrics.false_omission_rate(y_true, y_pred)
-    positive_likelihood_ratio = metrics.positive_likelihood_ratio(y_true, y_pred)
-    negative_likelihood_ratio = metrics.negative_likelihood_ratio(y_true, y_pred)
-    prevalence = metrics.prevalence(y_true, y_pred)
+    # Generate a report (custom metrics function)
+    metrics.generate_report(y_true, y_pred)
 
-    print(f"Binary Accuracy: {binary_accuracy:.4f}")
-    print(f"AUCRC: {aucrc:.4f}")
-    print(f"AUPRC: {auprc:.4f}")
-    print(f"AUROC: {auroc:.4f}")
-    print(f"Confusion Matrix: {confusionmatrix}")
-    print(f"Binary Precision: {binary_precision:.4f}")
-    print(f"Binary Recall: {binary_recall:.4f}")
-    print(f"Binary F1 Score: {binary_f1_score:.4f}")
-    print(f"Binary F0.5 Score: {binary_f05_score:.4f}")
-    print(f"Binary F2 Score: {binary_f2_score:.4f}")
-    print(f"False Omission Rate: {false_omission_rate:.4f}")
-    print(f"Positive Likelihood Ratio: {positive_likelihood_ratio:.4f}")
-    print(f"Negative Likelihood Ratio: {negative_likelihood_ratio:.4f}")
-    print(f"Prevalence: {prevalence:.4f}")
     
 
     

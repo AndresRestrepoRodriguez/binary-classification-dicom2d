@@ -7,14 +7,14 @@ import torchvision.transforms as transforms
 import yaml
 import requests
 from torch.utils.data import Dataset, DataLoader
-
+from typing import Union
 import pydicom
 import numpy as np
 from bs4 import BeautifulSoup
+from typing import Union
 
 
-
-def download_public_google_drive_file(file_id, destination):
+def download_public_google_drive_file(file_id: str, destination: str):
     """
     Download a publicly shared file from Google Drive using its file ID and save it to a local file.
 
@@ -66,7 +66,7 @@ def save_response_content(response, destination):
                 f.write(chunk)
 
 
-def decompress_file(filepath, extract_to):
+def decompress_file(filepath : str, extract_to: str):
     """
     Decompress a file based on its extension.
 
@@ -99,7 +99,16 @@ def decompress_file(filepath, extract_to):
     print(f"Removed compressed file '{filepath}'.")
 
 
-def define_train_transformation(img_size: int):
+def define_train_transformation(img_size: int) -> transforms.Compose:
+    """
+    Defines the training transformation for image preprocessing.
+
+    Args:
+        img_size (int): The size to which the input images should be resized (width and height).
+
+    Returns:
+        transforms.Compose: A composition of transformations including conversion to tensor and resizing.
+    """
 
     training_transform = transforms.Compose([
         transforms.ToTensor(),
@@ -123,7 +132,18 @@ def define_val_transformation(img_size: int):
     return validation_transform
 
 
-def define_dataloader(dataset: Dataset, batch_size: int, shuffle: bool = True):
+def define_dataloader(dataset: Dataset, batch_size: int, shuffle: bool = True) -> DataLoader:
+    """
+    Defines a DataLoader for the given dataset.
+
+    Args:
+        dataset (torch.utils.data.Dataset): The dataset to load.
+        batch_size (int): Number of samples per batch.
+        shuffle (bool, optional): Whether to shuffle the dataset at every epoch. Defaults to True.
+
+    Returns:
+        torch.utils.data.DataLoader: A DataLoader object for the dataset.
+    """
     return DataLoader(dataset, batch_size=batch_size, shuffle=shuffle)
 
 
@@ -154,7 +174,55 @@ def read_yaml(filepath: str):
     return data
 
 
-def read_dicom_image(image_file):
+def read_dicom_image(image_file: Union[str, bytes]) -> np.ndarray:
+    """
+    Reads a DICOM image from a file and normalizes its pixel values.
+
+    Args:
+        image_file (Union[str, bytes]): The path to the DICOM file or file-like object in bytes.
+
+    Returns:
+        np.ndarray: A NumPy array of the image data, normalized to the range [0, 1].
+    """
     ds = pydicom.dcmread(image_file, force=True)
     image = ds.pixel_array.astype(np.float32) / 255.0
     return image
+
+
+def normalize_image(image):
+    # Check the data type
+    if image.dtype == np.uint8:
+        return image.astype(np.float32) / 255.0
+    elif image.dtype == np.uint16:
+        return image.astype(np.float32) / 65535.0
+    elif image.dtype == np.int16:
+        # Shift to positive range and normalize
+        image_shifted = image.astype(np.float32) + 32768
+        return image_shifted / 65535.0
+    else:
+        raise ValueError("Unsupported data type")
+    
+
+def normalize_ct_int16(image_array, min_hu=-1024, max_hu=3071):
+    """
+    Normalize a DICOM CT image stored as int16 to the range [0, 1].
+    
+    Parameters:
+    - image_array: NumPy array of the CT image with int16 data type.
+    - min_hu: Minimum HU value to use for normalization (default: -1024).
+    - max_hu: Maximum HU value to use for normalization (default: 3071).
+    
+    Returns:
+    - Normalized NumPy array with values in the range [0, 1].
+    """
+    
+    # Ensure the image array is in float32 to perform normalization
+    image_array = image_array.astype(np.float32)
+    
+    # Clip the HU values to the specified range to handle outliers
+    image_array = np.clip(image_array, min_hu, max_hu)
+    
+    # Normalize to the range [0, 1]
+    normalized_image = (image_array - min_hu) / (max_hu - min_hu)
+    
+    return normalized_image

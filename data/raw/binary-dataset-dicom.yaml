@@ -1,6 +1,6 @@
 source: google-drive
-id_file: 1CIgRJaofeWScv9JfPya7aNP2QGgbE_KT
+id_file: 15vDbB9nRVaaQUcQXm8isgkikW76ZYcBB
 task: binary-classification
-classes: ['brain', 'chest']
+classes: ['bodyfront', 'bodyside']
 extension: rar
-folder: dataset-binary-dicom2d
+folder: dataset-binary-dicom_v2-int16

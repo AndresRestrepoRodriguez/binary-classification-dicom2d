@@ -5,4 +5,4 @@ classes: ['brain', 'chest']
 extension: torchscript
 framework: pytorch
 folder: best_model
-file_name: best_model_brain_chest.torchscript
+file_name: binary_best_model_v2.torchscript

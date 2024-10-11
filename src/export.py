@@ -6,13 +6,26 @@ from models.export_model import (
     export_model_onnx
 )
 import os
+from typing import Union, Any
 
 FORMATS = ['torchscript', 'onnx']
 
 
 
 
-def export(opt):
+def export(opt: argparse.Namespace) -> None:
+    """
+    Exports a trained model in either TorchScript or ONNX format.
+
+    Args:
+        opt (argparse.Namespace): Parsed command-line arguments containing:
+            - weights (str): Path to the model weights file.
+            - imgsz (int): Image size for the dummy input tensor.
+            - format (str): Format to export the model ('torchscript' or 'onnx').
+
+    Raises:
+        Exception: If there is an issue loading the model or if an invalid format is provided.
+    """
 
     weights, image_size, format = (
         opt.weights,
@@ -52,7 +65,15 @@ def export(opt):
 
 
 def parse_opt(known=False):
-    """Parses command-line arguments for YOLOv5 training, validation, and testing."""
+    """
+    Parses command-line arguments for model exporting.
+
+    Args:
+        known (bool, optional): Whether to return known arguments only (used for testing). Defaults to False.
+
+    Returns:
+        argparse.Namespace: Parsed command-line arguments.
+    """
     parser = argparse.ArgumentParser()
     parser.add_argument("--weights", type=str, default=None, help="initial weights path")
     parser.add_argument("--imgsz", "--img", "--img-size", type=int, default=224, help="train, val image size (pixels)")
@@ -60,15 +81,25 @@ def parse_opt(known=False):
     return parser.parse_known_args()[0] if known else parser.parse_args()
 
 
-def main(parameters):
+def main(parameters: argparse.Namespace) -> None:
+    """
+    Main function to initiate model export with the given parameters.
+
+    Args:
+        parameters (argparse.Namespace): Command-line arguments for exporting the model.
+    """
     export(parameters)
 
 
-def run(**kwargs):
+def run(**kwargs: Union[str, int]) -> argparse.Namespace:
     """
-    Executes YOLOv5 training with given options, overriding with any kwargs provided.
+    Executes the model export with given options, overriding any command-line arguments with the provided keyword arguments.
 
-    Example: import train; train.run(data='coco128.yaml', imgsz=320, weights='yolov5m.pt')
+    Args:
+        **kwargs (Union[str, int]): Additional options to override default command-line arguments.
+
+    Returns:
+        argparse.Namespace: The final set of options used for model export.
     """
     opt = parse_opt(True)
     for k, v in kwargs.items():

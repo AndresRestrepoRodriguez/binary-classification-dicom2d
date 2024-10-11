@@ -319,3 +319,36 @@ def prevalence(y_true: np.ndarray, y_pred: np.ndarray) -> float:
     """
     total = len(y_pred)
     return np.sum(y_true == 1) / total
+
+
+def generate_report(y_true, y_pred) -> None:
+
+    binary_accuracy_score = binary_accuracy(y_true, y_pred)
+    aucrc_score = aucrc(y_true, y_pred)
+    auprc_score= auprc(y_true, y_pred)
+    auroc_score = auroc(y_true, y_pred)
+    confusionmatrix_score = confusionmatrix(y_true, y_pred)
+    binary_precision_score = binary_precision(y_true, y_pred)
+    binary_recall_score = binary_recall(y_true, y_pred)
+    binary_f1_score_score = binary_f1_score(y_true, y_pred)
+    binary_f05_score_score = binary_f05_score(y_true, y_pred)
+    binary_f2_score_score = binary_f2_score(y_true, y_pred)
+    false_omission_rate_score = false_omission_rate(y_true, y_pred)
+    positive_likelihood_ratio_score = positive_likelihood_ratio(y_true, y_pred)
+    negative_likelihood_ratio_score = negative_likelihood_ratio(y_true, y_pred)
+    prevalence_score = prevalence(y_true, y_pred)
+
+    print(f"Binary Accuracy: {binary_accuracy_score:.4f}")
+    print(f"AUCRC: {aucrc_score:.4f}")
+    print(f"AUPRC: {auprc_score:.4f}")
+    print(f"AUROC: {auroc_score:.4f}")
+    print(f"Confusion Matrix: {confusionmatrix_score}")
+    print(f"Binary Precision: {binary_precision_score:.4f}")
+    print(f"Binary Recall: {binary_recall_score:.4f}")
+    print(f"Binary F1 Score: {binary_f1_score_score:.4f}")
+    print(f"Binary F0.5 Score: {binary_f05_score_score:.4f}")
+    print(f"Binary F2 Score: {binary_f2_score_score:.4f}")
+    print(f"False Omission Rate: {false_omission_rate_score:.4f}")
+    print(f"Positive Likelihood Ratio: {positive_likelihood_ratio_score:.4f}")
+    print(f"Negative Likelihood Ratio: {negative_likelihood_ratio_score:.4f}")
+    print(f"Prevalence: {prevalence_score:.4f}")

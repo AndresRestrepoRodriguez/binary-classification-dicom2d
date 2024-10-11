@@ -128,7 +128,7 @@ In addition to the Python script, a Jupyter notebook is provided in this reposit
 
 To use the notebook:
 
-1. Open the provided notebook located in Notebooks folder (Sandbox_Torch_DICOM_2D_Multiclass.ipynb) in your Jupyter environment or Colab.
+1. Open the provided notebook located in Notebooks folder (Sandbox_Torch_DICOM_2D_Binary.ipynb) in your Jupyter environment or Colab.
 2. Update the paths for your dataset and configuration file.
 3. Run through the cells to:
    - Setting up.

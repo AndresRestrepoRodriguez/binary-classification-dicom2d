@@ -64,10 +64,10 @@ Example of a configuration file (`dataset_config.yaml`):
 ```yaml
 source: google-drive
 id_file: 1GioXTPCM9oMJmBuqX-3emdu6MPn
-task: multiclass-classification
-classes: ['bodyfront', 'bodyside', 'otherview']
+task: binary-classification
+classes: ['bodyfront', 'bodyside']
 extension: rar
-folder: dataset-multiclass-dicom_v2-int16
+folder: dataset-binary-dicom_v2-int16
 ```
 
 Make sure to replace the information with the actual details from the dataset. The configuration file should be located into the data/raw folder. There is located the previous example.
@@ -116,7 +116,6 @@ python exporting.py --data dataset_config.yaml --weights /path/model.pt
 ```
 
 - `--weights`: (str) Path to the model weights or model path. 
-- `--num-classes`: (int) Number of classes of the model.
 - `--format`: (str) Final format. Default torchscript. Options: torchscript and onnx.
 - `--imgsz`: (int) Image size for the input images. Default 224.
 
